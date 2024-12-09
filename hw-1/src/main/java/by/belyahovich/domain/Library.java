@@ -2,46 +2,49 @@ package by.belyahovich.domain;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-@NoArgsConstructor
 @EqualsAndHashCode
+@ToString
 public class Library {
 
-    private List<Book> bookArrayList = new ArrayList<>();
-
-
-    @Override
-    public String toString() {
-        return "Library{" +
-                "bookArrayList=" + bookArrayList +
-                '}';
-    }
+    private final List<Book> bookArrayList = new ArrayList<>();
 
     public void addBook(Book... book) {
         bookArrayList.addAll(Arrays.asList(book));
     }
 
-    public void printAllBooksInLibrary(List<Book> bookList) {
-        bookList.forEach(Book::displayInfo);
+    public void printBooksInLibrary() {
+        bookArrayList.forEach(Book::displayInfo);
     }
 
-    public void printAvailableBooks() {
-        bookArrayList.stream()
+    public void printBooksAvailableInLibrary() {
+        findAvailableBooks().forEach(Book::displayInfo);
+    }
+
+    public void printBooksFindingByAuthor(String author) {
+        List<Book> booksByAuthor = findBooksByAuthor(author);
+        if (booksByAuthor.size() == 0){
+            System.out.printf("No books by %s were found in the library\n", author);
+        }
+        booksByAuthor.forEach(Book::displayInfo);
+    }
+
+    private List<Book> findAvailableBooks() {
+        return bookArrayList.stream()
                 .filter(Book::isAvailable)
-                .forEach(Book::displayInfo);
+                .collect(Collectors.toList());
     }
 
-    public List<Book> findBooksByAuthor(String author) {
-        if (author == null){
-            return Collections.emptyList();
+    private List<Book> findBooksByAuthor(String author) {
+        if (author == null) {
+            throw new IllegalArgumentException("Author cannot be null");
         }
         return bookArrayList.stream()
                 .filter(book -> book.getAuthor().equals(author))

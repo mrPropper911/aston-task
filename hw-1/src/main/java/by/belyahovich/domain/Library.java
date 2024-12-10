@@ -20,20 +20,64 @@ public class Library {
         bookArrayList.addAll(Arrays.asList(book));
     }
 
+    public void borrowBookByTitle(String title) {
+        if (title == null) {
+            throw new IllegalArgumentException("Title cannot be null");
+        }
+
+        bookArrayList.stream()
+                .filter(book -> book.getTitle().equalsIgnoreCase(title))
+                .filter(Book::isAvailable)
+                .findFirst()
+                .ifPresentOrElse(
+                        Book::borrowBook,
+                        () -> System.out.println("There is no available book with this title: " + title)
+                );
+    }
+
+    public void returnBookByTitle(String title) {
+        if (title == null) {
+            throw new IllegalArgumentException("Title cannot be null");
+        }
+
+        bookArrayList.stream()
+                .filter(book -> book.getTitle().equalsIgnoreCase(title))
+                .findFirst()
+                .ifPresentOrElse(
+                        Book::returnBook,
+                        () -> System.out.println("There is no book with this title: " + title)
+                );
+    }
+
     public void printBooksInLibrary() {
-        bookArrayList.forEach(Book::displayInfo);
+        if (bookArrayList.isEmpty()) {
+            System.out.println("Library is empty");
+        } else {
+            bookArrayList.forEach(Book::displayInfo);
+        }
     }
 
     public void printBooksAvailableInLibrary() {
-        findAvailableBooks().forEach(Book::displayInfo);
+        List<Book> availableBooks = findAvailableBooks();
+        if (availableBooks.isEmpty()) {
+            System.out.println("No available books on library");
+        } else {
+            availableBooks.forEach(Book::displayInfo);
+        }
     }
 
     public void printBooksFindingByAuthor(String author) {
-        List<Book> booksByAuthor = findBooksByAuthor(author);
-        if (booksByAuthor.size() == 0){
-            System.out.printf("No books by %s were found in the library\n", author);
+        if (author == null) {
+            throw new IllegalArgumentException("Author cannot be null");
         }
-        booksByAuthor.forEach(Book::displayInfo);
+
+        List<Book> booksByAuthor = findBooksByAuthor(author);
+
+        if (booksByAuthor == null || booksByAuthor.isEmpty()) {
+            System.out.printf("No books by %s were found in the library\n", author);
+        } else {
+            booksByAuthor.forEach(Book::displayInfo);
+        }
     }
 
     private List<Book> findAvailableBooks() {
@@ -43,13 +87,8 @@ public class Library {
     }
 
     private List<Book> findBooksByAuthor(String author) {
-        if (author == null) {
-            throw new IllegalArgumentException("Author cannot be null");
-        }
         return bookArrayList.stream()
-                .filter(book -> book.getAuthor().equals(author))
+                .filter(book -> book.getAuthor().equalsIgnoreCase(author))
                 .collect(Collectors.toList());
     }
-
-
 }

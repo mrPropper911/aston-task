@@ -27,7 +27,7 @@ public class Library {
 
         bookArrayList.stream()
                 .filter(book -> book.getTitle().equalsIgnoreCase(title))
-                .filter(Book::isAvailable)
+                .filter(Book::getIsAvailable)
                 .findFirst()
                 .ifPresentOrElse(
                         Book::borrowBook,
@@ -58,7 +58,7 @@ public class Library {
     }
 
     public void printBooksAvailableInLibrary() {
-        List<Book> availableBooks = findAvailableBooks();
+        var availableBooks = findAvailableBooks();
         if (availableBooks.isEmpty()) {
             System.out.println("No available books on library");
         } else {
@@ -71,7 +71,7 @@ public class Library {
             throw new IllegalArgumentException("Author cannot be null");
         }
 
-        List<Book> booksByAuthor = findBooksByAuthor(author);
+        var booksByAuthor = findBooksByAuthor(author);
 
         if (booksByAuthor == null || booksByAuthor.isEmpty()) {
             System.out.printf("No books by %s were found in the library\n", author);
@@ -82,7 +82,7 @@ public class Library {
 
     private List<Book> findAvailableBooks() {
         return bookArrayList.stream()
-                .filter(Book::isAvailable)
+                .filter(Book::getIsAvailable)
                 .collect(Collectors.toList());
     }
 

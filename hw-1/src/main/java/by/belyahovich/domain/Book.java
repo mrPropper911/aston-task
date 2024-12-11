@@ -9,12 +9,12 @@ import lombok.Setter;
 @EqualsAndHashCode
 public class Book {
 
-    private static final short DEFAULT_UNKNOWN_YEAR = -1;
+    private static final Short DEFAULT_UNKNOWN_YEAR = -1;
 
     private String title;
     private String author;
-    private short year;
-    private boolean isAvailable = true;
+    private Short year;
+    private Boolean isAvailable = true;
 
     public Book(String title, String author) {
         this.title = title;

@@ -37,7 +37,7 @@ public class Application {
         libraryMain.printBooksAvailableInLibrary();
 
         System.out.println("\nBooks in library after add new book");
-        Book newBook = new Book("War and Peace 2", "James White", (short) 1813, true);
+        var newBook = new Book("War and Peace 2", "James White", (short) 1813, true);
         libraryMain.addBook(newBook);
         libraryMain.printBooksInLibrary();
     }

@@ -9,7 +9,7 @@ import lombok.Setter;
 @EqualsAndHashCode
 public class Book {
 
-    private static final Short DEFAULT_UNKNOWN_YEAR = -1;
+    private static final short DEFAULT_UNKNOWN_YEAR = -1;
 
     private String title;
     private String author;
@@ -40,11 +40,21 @@ public class Book {
     }
 
     public void borrowBook() {
-        this.isAvailable = false;
+        if (this.isAvailable) {
+            this.isAvailable = false;
+            System.out.println("Successfully borrowed the book: " + this.title);
+        } else {
+            System.out.println("Book already borrowed");
+        }
     }
 
     public void returnBook() {
-        this.isAvailable = true;
+        if (!this.isAvailable) {
+            this.isAvailable = true;
+            System.out.println("Successfully return the book: " + this.title);
+        } else {
+            System.out.println("Book already returned");
+        }
     }
 
     public void displayInfo() {

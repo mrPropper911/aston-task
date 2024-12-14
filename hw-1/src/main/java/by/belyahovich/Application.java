@@ -20,25 +20,26 @@ public class Application {
 
     public static void main(String[] args) {
         System.out.println("\nBooks in library");
-        libraryMain.printBooksInLibrary();
+        libraryMain.getBooksInLibrary().forEach(Book::displayInfo);
 
         System.out.println("\nAvailable books in library");
-        libraryMain.printBooksAvailableInLibrary();
+        libraryMain.getBooksAvailableInLibrary().forEach(Book::displayInfo);
 
         System.out.println("\nAvailable books by the author");
-        libraryMain.printBooksFindingByAuthor("David Lee");
+        libraryMain.getBooksFindingByAuthor("David Lee").forEach(Book::displayInfo);
 
         System.out.println("\nAvailable books in library after you borrowed one");
         libraryMain.borrowBookByTitle("The Lord of the Rings 2");
-        libraryMain.printBooksAvailableInLibrary();
+        libraryMain.getBooksAvailableInLibrary().forEach(Book::displayInfo);
 
         System.out.println("\nAvailable books in library after you return one");
         libraryMain.returnBookByTitle("The Lord of the Rings 2");
-        libraryMain.printBooksAvailableInLibrary();
+        libraryMain.getBooksAvailableInLibrary().forEach(Book::displayInfo);
 
         System.out.println("\nBooks in library after add new book");
         var newBook = new Book("War and Peace 2", "James White", (short) 1813, true);
         libraryMain.addBook(newBook);
-        libraryMain.printBooksInLibrary();
+        libraryMain.addBook(newBook);
+        libraryMain.getBooksInLibrary().forEach(Book::displayInfo);
     }
 }

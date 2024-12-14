@@ -1,34 +1,37 @@
 package by.belyahovich.domain;
 
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.ToString;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Getter
 @EqualsAndHashCode
 @ToString
 public class Library {
 
     private final List<Book> bookArrayList = new ArrayList<>();
 
-    public void addBook(Book... book) {
-        bookArrayList.addAll(Arrays.asList(book));
+    public void addBook(Book... books) {
+        for (var book : books) {
+            if (!findBookByTitle(book.getTitle()).isEmpty()) {
+                System.out.printf("Book with title: \"%s\" already exists\n", book.getTitle());
+                continue;
+            }
+            bookArrayList.add(book);
+        }
     }
 
     public void borrowBookByTitle(String title) {
         if (title == null) {
             throw new IllegalArgumentException("Title cannot be null");
         }
-
         bookArrayList.stream()
                 .filter(book -> book.getTitle().equalsIgnoreCase(title))
                 .filter(Book::getIsAvailable)
-                .findFirst()
+                .findAny()
                 .ifPresentOrElse(
                         Book::borrowBook,
                         () -> System.out.println("There is no available book with this title: " + title)
@@ -39,44 +42,43 @@ public class Library {
         if (title == null) {
             throw new IllegalArgumentException("Title cannot be null");
         }
-
         bookArrayList.stream()
                 .filter(book -> book.getTitle().equalsIgnoreCase(title))
-                .findFirst()
+                .findAny()
                 .ifPresentOrElse(
                         Book::returnBook,
                         () -> System.out.println("There is no book with this title: " + title)
                 );
     }
 
-    public void printBooksInLibrary() {
+    public List<Book> getBooksInLibrary() {
         if (bookArrayList.isEmpty()) {
             System.out.println("Library is empty");
-        } else {
-            bookArrayList.forEach(Book::displayInfo);
+            return Collections.emptyList();
         }
+        return bookArrayList;
     }
 
-    public void printBooksAvailableInLibrary() {
+    public List<Book> getBooksAvailableInLibrary() {
         var availableBooks = findAvailableBooks();
         if (availableBooks.isEmpty()) {
             System.out.println("No available books on library");
+            return Collections.emptyList();
         } else {
-            availableBooks.forEach(Book::displayInfo);
+            return availableBooks;
         }
     }
 
-    public void printBooksFindingByAuthor(String author) {
+    public List<Book> getBooksFindingByAuthor(String author) {
         if (author == null) {
             throw new IllegalArgumentException("Author cannot be null");
         }
-
         var booksByAuthor = findBooksByAuthor(author);
-
         if (booksByAuthor == null || booksByAuthor.isEmpty()) {
             System.out.printf("No books by %s were found in the library\n", author);
+            return Collections.emptyList();
         } else {
-            booksByAuthor.forEach(Book::displayInfo);
+            return booksByAuthor;
         }
     }
 
@@ -89,6 +91,12 @@ public class Library {
     private List<Book> findBooksByAuthor(String author) {
         return bookArrayList.stream()
                 .filter(book -> book.getAuthor().equalsIgnoreCase(author))
+                .collect(Collectors.toList());
+    }
+
+    private List<Book> findBookByTitle(String title) {
+        return bookArrayList.stream()
+                .filter(book -> book.getTitle().equalsIgnoreCase(title))
                 .collect(Collectors.toList());
     }
 }
